@@ -54,8 +54,3 @@ def get_ai_response(user_message: str, history: list = None) -> str:
         print(f"[llm] Groq API error: {e}")
         return "Sorry, I'm having trouble connecting right now. Try again in a moment!"
 
-
-# ── Quick test ────────────────────────────────────────────────────────────────
-if __name__ == "__main__":
-    reply = get_ai_response("I have 50 euros and want to go somewhere from Paris this weekend")
-    print(reply)
