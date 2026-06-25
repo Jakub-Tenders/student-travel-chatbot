@@ -164,7 +164,13 @@ async function handleChatSubmit(event) {
   try {
     const data = await requestJson("/api/chat", {
       method: "POST",
-      body: JSON.stringify({ message, history: state.history }),
+      body: JSON.stringify({
+      message,
+      history: state.history,
+      origin: document.querySelector("#origin").value.trim() || null,
+      destination: document.querySelector("#destination").value.trim() || null,
+      date: document.querySelector("#date").value || null,
+}),
     });
     const reply = data.reply || "No reply returned.";
     addMessage("assistant", reply);
