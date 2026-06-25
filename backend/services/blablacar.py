@@ -15,9 +15,7 @@ B-conception.docx and C-privacy.docx (no real user data sent to a
 third party while in mock mode).
 """
 
-import os
 import random
-from datetime import datetime
 
 
 def search_rides(origin: str, destination: str, date: str, max_results: int = 5) -> list[dict]:

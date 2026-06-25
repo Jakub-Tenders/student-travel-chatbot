@@ -21,7 +21,9 @@ MOCK_FLIGHTS = [
         "stops": 0,
         "departure": "2026-08-01T06:15:00",
         "arrival": "2026-08-01T08:10:00",
-        "carrier": "Vueling"
+        "carrier": "Vueling",
+        "origin": None,
+        "destination": None,
     },
     {
         "price": 44.99,
@@ -30,6 +32,31 @@ MOCK_FLIGHTS = [
         "stops": 0,
         "departure": "2026-08-01T10:30:00",
         "arrival": "2026-08-01T12:30:00",
+        "carrier": "Ryanair",
+        "origin": None,
+        "destination": None,
+    },
+    {
+        "price": 89.00,
+        "currency": "EUR",
+        "duration": 110,
+        "stops": 0,
+        "departure": "2026-08-01T18:45:00",
+        "arrival": "2026-08-01T20:35:00",
+        "carrier": "Air France",
+        "origin": None,
+        "destination": None,
+    },
+    {
+        "price": 142.50,
+        "currency": "EUR",
+        "duration": 290,
+        "stops": 1,
+        "departure": "2026-08-01T07:00:00",
+        "arrival": "2026-08-01T12:10:00",
+        "carrier": "Iberia",
+        "origin": None,
+        "destination": None,
     }
 ]
 
@@ -75,6 +102,8 @@ def _parse_itineraries(data):
             "departure": leg.get("departure"),
             "arrival": leg.get("arrival"),
             "carrier": leg.get("carriers", {}).get("marketing", [{}])[0].get("name"),
+            "origin": leg.get("origin", {}).get("city"),
+            "destination": leg.get("destination", {}).get("city"),
         })
     return flights
 
@@ -86,7 +115,11 @@ def search_one_way(origin_city, destination_city, depart_date, adults=1, currenc
     Returns a list of flight dicts sorted cheapest first.
     """
     if USE_MOCK:
+        for f in MOCK_FLIGHTS:
+            f["origin"] = origin_city
+            f["destination"] = destination_city
         return MOCK_FLIGHTS
+    
     try:
         origin_sky_id, origin_entity_id = _resolve_city(origin_city)
         dest_sky_id, dest_entity_id = _resolve_city(destination_city)
