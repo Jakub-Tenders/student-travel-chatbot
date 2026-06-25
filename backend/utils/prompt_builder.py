@@ -11,10 +11,24 @@ def build_travel_context(flights=None, rides=None, hostels=None) -> str:
         sections.append("\n".join(lines))
 
     if rides:
-        sections.append("Available rides:\n  (coming soon)")
+        lines = ["Available carpooling rides:"]
+        for r in rides[:5]:
+            lines.append(
+                f"  - {r['driver_name']} ({r['car_model']}): {r['origin']} → {r['destination']}, "
+                f"departs {r['departure_time']}, {r['seats_available']} seat(s), "
+                f"€{r['price_eur']} — rated {r['rating']}/5"
+            )
+        sections.append("\n".join(lines))
 
     if hostels:
-        sections.append("Available hostels:\n  (coming soon)")
+        lines = ["Available hostels:"]
+        for h in hostels[:5]:
+            lines.append(
+                f"  - {h['name']} ({h['city']}): €{h['price_per_night_eur']}/night, "
+                f"rated {h['rating']}/10 ({h['reviews_count']} reviews), "
+                f"amenities: {', '.join(h['amenities'])}"
+            )
+        sections.append("\n".join(lines))
 
     if not sections:
         return ""
