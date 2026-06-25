@@ -11,6 +11,28 @@ HEADERS = {
     "X-RapidAPI-Host": "flights-sky.p.rapidapi.com",
 }
 
+USE_MOCK = True
+
+MOCK_FLIGHTS = [
+    {
+        "price": 29.99,
+        "currency": "EUR",
+        "duration": 115,
+        "stops": 0,
+        "departure": "2026-08-01T06:15:00",
+        "arrival": "2026-08-01T08:10:00",
+        "carrier": "Vueling"
+    },
+    {
+        "price": 44.99,
+        "currency": "EUR",
+        "duration": 120,
+        "stops": 0,
+        "departure": "2026-08-01T10:30:00",
+        "arrival": "2026-08-01T12:30:00",
+    }
+]
+
 
 def _resolve_city(city_name):
     """
@@ -63,6 +85,8 @@ def search_one_way(origin_city, destination_city, depart_date, adults=1, currenc
     Handles the incomplete-status polling loop automatically.
     Returns a list of flight dicts sorted cheapest first.
     """
+    if USE_MOCK:
+        return MOCK_FLIGHTS
     try:
         origin_sky_id, origin_entity_id = _resolve_city(origin_city)
         dest_sky_id, dest_entity_id = _resolve_city(destination_city)
