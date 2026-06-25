@@ -18,7 +18,7 @@ Guidelines:
 """
 
 
-def get_ai_response(user_message: str, history: list = None) -> str:
+def get_ai_response(user_message: str, history: list = None, context: str = "") -> str:
     """
     Send a message to Groq's LLM and get a text response.
 
@@ -35,6 +35,10 @@ def get_ai_response(user_message: str, history: list = None) -> str:
     # Our frontend uses role: "bot", Groq expects role: "assistant"
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
+    if context:
+        messages.append({"role": "user", "content": context})
+        messages.append({"role": "assistant", "content": "Got it, I'll use that data in my response."})
+        
     for msg in history[-10:]:  # keep last 10 messages to limit token usage
         role = "assistant" if msg["role"] == "bot" else "user"
         messages.append({"role": role, "content": msg["text"]})
