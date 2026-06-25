@@ -5,10 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_URL = "https://sky-scrapper.p.rapidapi.com/api/v1/flights"
+BASE_URL = "https://flights-sky.p.rapidapi.com/flights"
 HEADERS = {
     "X-RapidAPI-Key": os.environ.get("RAPIDAPI_KEY"),
-    "X-RapidAPI-Host": "sky-scrapper.p.rapidapi.com",
+    "X-RapidAPI-Host": "flights-sky.p.rapidapi.com",
 }
 
 
@@ -17,17 +17,20 @@ def _resolve_city(city_name):
     Use flights/auto-complete to turn a city name into (skyId, entityId).
     Returns the first result's skyId and entityId, or (None, None) on failure.
     """
+    print(f"[debug key] {os.environ.get('RAPIDAPI_KEY')}")
     response = requests.get(
         f"{BASE_URL}/auto-complete",
         headers=HEADERS,
         params={"query": city_name},
     )
     response.raise_for_status()
+    print(f"[autocomplete raw] {response.json()}")
     results = response.json().get("data", [])
     if not results:
         return None, None
-    first = results[0]
-    return first.get("skyId"), first.get("entityId")
+    airports = [r for r in results if r.get("navigation", {}).get("entityType") == "AIRPORT"]
+    first = airports[0] if airports else results[0]
+    return first.get("presentation", {}).get("skyId"), first.get("presentation", {}).get("id")
 
 
 def _parse_itineraries(data):
@@ -82,6 +85,7 @@ def search_one_way(origin_city, destination_city, depart_date, adults=1, currenc
         response = requests.get(f"{BASE_URL}/search-one-way", headers=HEADERS, params=params)
         response.raise_for_status()
         body = response.json()
+        print(f"[search-one-way raw] {body}")
 
         context = body.get("data", {}).get("context", {})
         all_itineraries = body.get("data", {})
