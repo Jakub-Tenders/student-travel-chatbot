@@ -1,14 +1,13 @@
 from flask import Blueprint, request, jsonify
+from services.hostels import search_hostels
 
 hostels_bp = Blueprint("hostels", __name__)
 
 
 @hostels_bp.route("/api/search/hostels", methods=["GET"])
-def search_hostels():
+def search_hostels_route():
     """
     GET /api/search/hostels?city=Amsterdam&max_price=30
-
-    Will call services/hostels.py once that's ready.
     """
     city = request.args.get("city")
     max_price = request.args.get("max_price", type=float)
@@ -16,7 +15,6 @@ def search_hostels():
     if not city:
         return jsonify({"error": "city is required"}), 400
 
-    # ── TODO once services/hostels.py exists ─────────────────────────
-    hostels = []  # placeholder
+    hostels = search_hostels(city, max_price=max_price)
 
     return jsonify({"hostels": hostels})
