@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Travel Chatbot</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Student Travel</p>
+          <h1>Plan cheap routes, hostels, and rides in one place.</h1>
+        </div>
+        <div class="api-control">
+          <label for="apiBase">API</label>
+          <input id="apiBase" type="url" value="http://localhost:5001" />
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel chat-panel" aria-labelledby="chatTitle">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Assistant</p>
+              <h2 id="chatTitle">Travel chat</h2>
+            </div>
+            <button id="clearChat" class="ghost-button" type="button">Clear</button>
+          </div>
+
+          <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+
+          <form id="chatForm" class="chat-form">
+            <input
+              id="chatInput"
+              type="text"
+              autocomplete="off"
+              placeholder="Ask for a low-budget weekend in Barcelona..."
+              required
+            />
+            <button type="submit">Send</button>
+          </form>
+        </section>
+
+        <section class="panel search-panel" aria-labelledby="searchTitle">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Search</p>
+              <h2 id="searchTitle">Find options</h2>
+            </div>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="Search type">
+            <button class="tab is-active" data-tab="flights" type="button">Flights</button>
+            <button class="tab" data-tab="rides" type="button">Rides</button>
+            <button class="tab" data-tab="hostels" type="button">Hostels</button>
+          </div>
+
+          <form id="transportForm" class="search-form">
+            <div class="field-row">
+              <label>
+                Origin
+                <input id="origin" type="text" placeholder="CDG or Paris" required />
+              </label>
+              <label>
+                Destination
+                <input id="destination" type="text" placeholder="BCN or Lyon" required />
+              </label>
+            </div>
+            <label>
+              Date
+              <input id="date" type="date" required />
+            </label>
+            <button id="transportSubmit" type="submit">Search flights</button>
+          </form>
+
+          <form id="hostelForm" class="search-form hidden">
+            <label>
+              City
+              <input id="city" type="text" placeholder="Amsterdam" required />
+            </label>
+            <label>
+              Max price per night
+              <input id="maxPrice" type="number" min="1" step="1" placeholder="30" />
+            </label>
+            <button type="submit">Search hostels</button>
+          </form>
+        </section>
+
+        <section class="panel results-panel" aria-labelledby="resultsTitle">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Results</p>
+              <h2 id="resultsTitle">Latest search</h2>
+            </div>
+          </div>
+          <div id="status" class="status">Run a search to see results here.</div>
+          <div id="results" class="results-grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./src/app.js" defer></script>
+  </body>
+</html>
