@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from services.llm import get_ai_response
 from services.sky_scrapper import search_one_way
 from utils.prompt_builder import build_travel_context
+from services.blablacar import search_rides
+from services.hostels import search_hostels
 
 chat_bp = Blueprint("chat", __name__)
 
@@ -24,9 +26,12 @@ def chat():
     destination = data.get("destination")
     date = data.get("date")
 
+    rides = search_rides(origin, destination, date) if all([origin, destination, date]) else []
+    hostels = search_hostels(destination) if destination else []
+
     flights = search_one_way(origin, destination, date) if all([origin, destination, date]) else []
-    context = build_travel_context(flights=flights)
+    context = build_travel_context(flights=flights, rides=rides, hostels=hostels)
 
     reply = get_ai_response(user_message, history, context)
 
-    return jsonify({"reply": reply, "flights": flights})
+    return jsonify({"reply": reply, "flights": flights, "rides": rides, "hostels": hostels})

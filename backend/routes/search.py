@@ -9,8 +9,6 @@ search_bp = Blueprint("search", __name__)
 def search_flights():
     """
     GET /api/search/flights?origin=CDG&destination=BCN&date=2025-07-15
-
-    Will call services/amadeus.py once that's ready.
     """
     origin = request.args.get("origin")
     destination = request.args.get("destination")
