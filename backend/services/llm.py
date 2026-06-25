@@ -21,11 +21,7 @@ Guidelines:
 def get_ai_response(user_message: str, history: list = None) -> str:
     """
     Send a message to Groq's LLM and get a text response.
-
-    Args:
-        user_message: The user's latest message
-        history: List of {"role": "user"/"bot", "text": "..."} from previous turns
-
+    
     Returns:
         The AI's text reply as a string.
     """
@@ -36,8 +32,16 @@ def get_ai_response(user_message: str, history: list = None) -> str:
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
     for msg in history[-10:]:  # keep last 10 messages to limit token usage
-        role = "assistant" if msg["role"] == "bot" else "user"
-        messages.append({"role": role, "content": msg["text"]})
+        if not isinstance(msg, dict):
+            continue
+
+        content = msg.get("text") or msg.get("content") or msg.get("message")
+        if not content:
+            continue
+
+        raw_role = msg.get("role", "user")
+        role = "assistant" if raw_role in ("bot", "assistant") else "user"
+        messages.append({"role": role, "content": content})
 
     messages.append({"role": "user", "content": user_message})
 
@@ -53,4 +57,3 @@ def get_ai_response(user_message: str, history: list = None) -> str:
     except Exception as e:
         print(f"[llm] Groq API error: {e}")
         return "Sorry, I'm having trouble connecting right now. Try again in a moment!"
-
