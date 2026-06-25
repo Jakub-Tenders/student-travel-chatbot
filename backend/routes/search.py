@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from services.blablacar import search_rides
 from services.sky_scrapper import search_one_way
 
 search_bp = Blueprint("search", __name__)
@@ -23,11 +24,9 @@ def search_flights():
 
 
 @search_bp.route("/api/search/rides", methods=["GET"])
-def search_rides():
+def search_rides_route():
     """
-    GET /api/search/rides?origin=Paris&destination=Lyon&date=2025-07-15
-
-    Will call services/blablacar.py once that's ready.
+    GET /api/search/rides?origin=Paris&destination=Lyon&date=2026-09-15
     """
     origin = request.args.get("origin")
     destination = request.args.get("destination")
@@ -36,7 +35,5 @@ def search_rides():
     if not all([origin, destination, date]):
         return jsonify({"error": "origin, destination and date are required"}), 400
 
-    # ── TODO once blablacar.py exists ────────────────────────────────
-    rides = []  # placeholder
-
+    rides = search_rides(origin, destination, date)
     return jsonify({"rides": rides})
