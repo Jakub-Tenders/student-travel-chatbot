@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from services.blablacar import search_rides
+from services.sky_scrapper import search_one_way
 
 search_bp = Blueprint("search", __name__)
 
@@ -18,12 +19,7 @@ def search_flights():
     if not all([origin, destination, date]):
         return jsonify({"error": "origin, destination and date are required"}), 400
 
-    # ── TODO once amadeus.py exists: ─────────────────────────────────
-    # from backend.services.amadeus import search_cheap_flights
-    # flights = search_cheap_flights(origin, destination, date)
-
-    flights = []  # placeholder
-
+    flights = search_one_way(origin, destination, date)
     return jsonify({"flights": flights})
 
 
