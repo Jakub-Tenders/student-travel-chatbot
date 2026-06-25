@@ -5,7 +5,8 @@ def build_travel_context(flights=None, rides=None, hostels=None) -> str:
         lines = ["Available flights:"]
         for f in flights[:5]:
             lines.append(
-                f"  - {f['carrier']}: {f['departure']} → {f['arrival']}, "
+                 f"  - {f['carrier']}: {f.get('origin', '?')} → {f.get('destination', '?')}, "
+                f"{f['departure']} → {f['arrival']}, "
                 f"{f['stops']} stop(s), {f['duration']}min, {f['price']} {f['currency']}"
             )
         sections.append("\n".join(lines))
