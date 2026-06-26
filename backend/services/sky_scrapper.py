@@ -66,14 +66,12 @@ def _resolve_city(city_name):
     Use flights/auto-complete to turn a city name into (skyId, entityId).
     Returns the first result's skyId and entityId, or (None, None) on failure.
     """
-    print(f"[debug key] {os.environ.get('RAPIDAPI_KEY')}")
     response = requests.get(
         f"{BASE_URL}/auto-complete",
         headers=HEADERS,
         params={"query": city_name},
     )
     response.raise_for_status()
-    print(f"[autocomplete raw] {response.json()}")
     results = response.json().get("data", [])
     if not results:
         return None, None
@@ -115,10 +113,7 @@ def search_one_way(origin_city, destination_city, depart_date, adults=1, currenc
     Returns a list of flight dicts sorted cheapest first.
     """
     if USE_MOCK:
-        for f in MOCK_FLIGHTS:
-            f["origin"] = origin_city
-            f["destination"] = destination_city
-        return MOCK_FLIGHTS
+        return [{**f, "origin": origin_city, "destination": destination_city} for f in MOCK_FLIGHTS]
     
     try:
         origin_sky_id, origin_entity_id = _resolve_city(origin_city)
@@ -142,7 +137,6 @@ def search_one_way(origin_city, destination_city, depart_date, adults=1, currenc
         response = requests.get(f"{BASE_URL}/search-one-way", headers=HEADERS, params=params)
         response.raise_for_status()
         body = response.json()
-        print(f"[search-one-way raw] {body}")
 
         context = body.get("data", {}).get("context", {})
         all_itineraries = body.get("data", {})
@@ -160,7 +154,6 @@ def search_one_way(origin_city, destination_city, depart_date, adults=1, currenc
             poll_response.raise_for_status()
             poll_body = poll_response.json()
             context = poll_body.get("data", {}).get("context", {})
-            # Merge new itineraries into our running set
             new_items = poll_body.get("data", {}).get("itineraries", [])
             all_itineraries.setdefault("itineraries", []).extend(new_items)
             polls += 1
