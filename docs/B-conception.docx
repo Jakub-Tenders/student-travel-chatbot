@@ -1,0 +1,35 @@
+*CONCEPTION AND PROJECT ORGANIZATION*
+
+*Planned task order*
+1. Define the idea: a chatbot for students who want cheap travel options in Europe.
+2. Create the backend base with Flask routes for chat and searches.
+3. Add travel data services: flights first, then carpooling and hostels.
+4. Build the prompt context so the LLM can compare flights, rides, and hostels.
+5. Connect Groq to generate the final chatbot answer.
+6. Build a simple frontend with a chat area, search forms, and result cards.
+7. Test the full flow and add documentation/benchmarking.
+
+*Software design*
+The project is separated into a small frontend and a Flask backend. The frontend only handles the user interface and sends requests to the API. The backend contains the application logic.
+
+Simple architecture:
+User -> Frontend -> Flask routes -> Services -> Prompt builder -> Groq LLM -> Response
+
+The Flask app uses different route files for each responsibility:
+- `routes/chat.py` manages the chatbot endpoint.
+- `routes/search.py` manages flight and ride searches.
+- `routes/hostels.py` manages hostel searches.
+
+The data access logic is separated into services:
+- `services/sky_scrapper.py` for flights.
+- `services/blablacar.py` for carpooling.
+- `services/hostels.py` for hostels.
+- `services/llm.py` for Groq.
+
+This design makes the project easier to extend. For example, the mock hostel or ride data can later be replaced by real APIs without changing the frontend or the main chat route too much.
+
+*Organization tool*
+We mainly used GitHub to organize the work. The project was split into branches such as `feat/frontend`, `feat/hostels`, `feat/blablacar`, `feat/prompt-builder`, and `chore/benchmark`. Pull requests and commits helped us follow what was done and merge each feature progressively.
+
+*Feedback on our organization*
+The branch-based workflow helped us work step by step and avoid mixing every feature together. Starting with the backend before the frontend was useful because the interface could connect to already existing endpoints. One thing we could improve is planning the documentation earlier, because some reports were filled at the end instead of during development.
